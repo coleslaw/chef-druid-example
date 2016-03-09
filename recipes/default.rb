@@ -10,10 +10,11 @@ node.set[:exhibitor][:opts][:port] = 8000
 include_recipe "zookeeper::default"
 
 node.set['mysql']['server_root_password'] = ''
-include_recipe "mysql::server"
+#include_recipe "mysql::server"
 
 # Create the druid db
-include_recipe "database::mysql"
+include_recipe "database::postgresql"
+
 mysql_database 'druid' do
   connection(
       :host     => 'localhost',
@@ -25,9 +26,10 @@ end
 
 # Configure Druid
 node.set[:druid][:properties]['druid.zk.service.host'] = 'localhost'
-node.set[:druid][:properties]['druid.db.connector.connectURI'] = 'jdbc:mysql://localhost/druid'
-node.set[:druid][:properties]['druid.db.connector.user'] = 'root'
-node.set[:druid][:properties]['druid.db.connector.password'] = node['mysql']['server_root_password']
+node.set[:druid][:properties]['druid.metadata.storage.type'] = 'mysql'
+node.set[:druid][:properties]['druid.metadata.storage.connector.connectURI'] = 'jdbc:mysql://localhost/druid'
+node.set[:druid][:properties]['druid.metadata.storage.connector.user'] = 'root'
+node.set[:druid][:properties]['druid.metadata.storage.connector.password'] = node['mysql']['server_root_password']
 node.set[:druid][:properties]['druid.computation.buffer.size'] = 10 * 1024 * 1024
 
 # From Historical node quickstart http://druid.io/docs/latest/Historical-Config.html
