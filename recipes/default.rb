@@ -10,7 +10,8 @@ node.set[:exhibitor][:opts][:port] = 8000
 include_recipe "zookeeper::default"
 
 node.set['mysql']['server_root_password'] = ''
-#include_recipe "mysql::server"
+# Don't setup another Mysql server.
+# include_recipe "mysql::server"
 
 # Create the druid db
 include_recipe "database::postgresql"
